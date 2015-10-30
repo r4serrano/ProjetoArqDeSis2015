@@ -1,0 +1,92 @@
+CREATE DATABASE ArqDeSis;
+
+CREATE TABLE tb_pais(
+	tb_pais_id						INTEGER				NOT NULL AUTO_INCREMENT,
+	tb_pais_descricao				VARCHAR(100)		NOT NULL,
+
+	CONSTRAINT tb_pais_id_pk PRIMARY KEY (tb_pais_id),
+	CONSTRAINT tb_pais_id CHECK (tb_pais_id > 0)
+);
+
+CREATE TABLE tb_uf(
+	tb_uf_id						INTEGER		 		NOT NULL AUTO_INCREMENT,
+	tb_uf_pais						INTEGER				NOT NULL,
+	tb_uf_descricao 				VARCHAR(100) 		NOT NULL,
+
+	CONSTRAINT tb_uf_id_pk PRIMARY KEY (tb_uf_id),
+	CONSTRAINT tb_uf_id	CHECK (tb_uf_id),
+	CONSTRAINT tb_uf_pais_fk FOREIGN KEY (tb_uf_pais) REFERENCES tb_pais (tb_pais_id)
+);
+
+CREATE TABLE tb_cidade(
+	tb_cidade_id					INTEGER				NOT NULL AUTO_INCREMENT,
+	tb_cidade_uf					INTEGER				NOT NULL,
+	tb_cidade_descricao				VARCHAR(100)		NOT NULL,
+
+	CONSTRAINT tb_cidade_id_pk PRIMARY KEY (tb_cidade_id),
+	CONSTRAINT tb_cidade_id CHECK (tb_cidade_uf),
+	CONSTRAINT tb_cidade_pais_fk FOREIGN KEY (tb_cidade_uf) REFERENCES tb_uf (tb_uf_id)
+);
+
+CREATE TABLE tb_cliente(
+	tb_cliente_id					INTEGER				NOT NULL AUTO_INCREMENT,
+	tb_cliente_descricao			VARCHAR(50)			NOT NULL,
+	tb_cliente_cpf					VARCHAR(15)			NOT NULL,
+    tb_cliente_rg					VARCHAR(12)			NOT NULL,
+	tb_cliente_telefone				NUMERIC(11,0)		NOT NULL,
+    tb_cliente_email				VARCHAR(50)			NOT NULL,
+	tb_cliente_dataNascimento		VARCHAR(10)			NOT NULL,
+	tb_cliente_sexo					CHAR(1)				NOT NULL,
+	tb_cliente_numeroRegistro		VARCHAR(11)			NOT NULL,
+	tb_cliente_estadoEmissor		INTEGER,
+	tb_cliente_validadeCarteira		VARCHAR(10)			NOT NULL,
+
+	CONSTRAINT tb_cliente_id_pk PRIMARY KEY (tb_CLIENTE_id),
+	CONSTRAINT tb_cliente_estadoEmissor_fk FOREIGN KEY (tb_cliente_estadoEmissor) REFERENCES tb_uf (tb_uf_id)
+);
+
+
+CREATE TABLE tb_veiculo(
+	tb_veiculo_id					INTEGER				NOT NULL AUTO_INCREMENT,
+	tb_veiculo_fabricante			VARCHAR(50)			NOT NULL,
+	tb_veiculo_modelo				VARCHAR(35)			NOT NULL,
+    tb_veiculo_chassi				VARCHAR(25)			NOT NULL,
+	tb_veiculo_placa				VARCHAR(8)			NOT NULL,
+    tb_veiculo_cidade				INTEGER 			NOT NULL,
+ -- estado
+	tb_veiculo_km					NUMERIC(6,2)		NOT NULL,
+	tb_veiculo_acessorio			VARCHAR(35)			NOT NULL,
+	tb_veiculo_grupo				CHAR(1)				NOT NULL,
+	tb_veiculo_locado				numeric(1,0)		NOT NULL,
+
+
+	CONSTRAINT tb_veiculo_id_pk PRIMARY KEY (tb_veiculo_id),
+	CONSTRAINT tb_veiculo_cidade_fk FOREIGN KEY (tb_veiculo_cidade) REFERENCES tb_cidade (tb_cidade_id)
+
+);
+
+DROP TABLE TB_VEICULO;
+DROP TABLE TB_CLIENTE;
+
+INSERT INTO tb_pais VALUES(1,'Brasil');
+INSERT INTO tb_pais VALUES(2,'Estados Unidos');
+INSERT INTO tb_pais VALUES(3,'China');
+INSERT INTO tb_pais VALUES(4,'Japao');
+INSERT INTO tb_pais VALUES(5,'Alemanha');
+
+INSERT INTO tb_uf VALUES (1, 1, 'SP');
+INSERT INTO tb_uf VALUES (2, 1, 'RJ');
+INSERT INTO tb_uf VALUES (3, 1, 'MG');
+INSERT INTO tb_uf VALUES (4, 1, 'BH');
+INSERT INTO tb_uf VALUES (5, 1, 'SC');
+INSERT INTO tb_uf VALUES (6, 1, 'AM');
+
+
+SELECT * FROM tb_pais;
+
+SELECT * FROM tb_uf;
+
+SELECT 
+	ps.tb_pais_descricao 
+FROM tb_uf uf
+INNER JOIN tb_pais ps	ON ps.tb_pais_id = uf.tb_uf_pais;
